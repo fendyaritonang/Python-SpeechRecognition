@@ -2,6 +2,7 @@ from ctypes import *
 from contextlib import contextmanager
 import pyaudio
 import wave
+import speech_recognition as sr
 
 ERROR_HANDLER_FUNC = CFUNCTYPE(None, c_char_p, c_int, c_char_p, c_int, c_char_p)
 
@@ -21,7 +22,7 @@ form_1 = pyaudio.paInt16 # 16-bit resolution
 chans = 1 # 1 channel
 samp_rate = 44100 # 44.1kHz sampling rate
 chunk = 4096 # 2^12 samples for buffer
-record_secs = 3 # seconds to record
+record_secs = 2 # seconds to record
 dev_index = 2 # device index found by p.get_device_info_by_index(ii)
 wav_output_filename = 'test1.wav' # name of .wav file
 
@@ -52,4 +53,13 @@ wavefile.setsampwidth(audio.get_sample_size(form_1))
 wavefile.setframerate(samp_rate)
 wavefile.writeframes(b''.join(frames))
 wavefile.close()
+
+r = sr.Recognizer();
+voiceTest  = sr.AudioFile(wav_output_filename);
+with voiceTest as source:
+	audio = r.record(source);
+
+textResult = r.recognize_google(audio);
+print(textResult);
+
 
