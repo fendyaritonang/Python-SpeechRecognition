@@ -27,10 +27,7 @@ chunk = 4096 # 2^12 samples for buffer
 record_secs = 2 # seconds to record
 dev_index = 2 # device index found by p.get_device_info_by_index(ii)
 wav_output_filename = 'test1.wav' # name of .wav file
-listenCommand = False
-waitingMaxIteration = 3
-iteration = 0
-
+listencommand = False
 
 def recognize_speech_from_mic(recognizer, audio):
 	# create pyaudio stream
@@ -85,32 +82,17 @@ if __name__ == "__main__":
 		with noalsaerr():
 			audioObj = pyaudio.PyAudio();
 		result = recognize_speech_from_mic(recognizer, audioObj);
-		engine = pyttsx3.init();
 		if result["error"]:
 			print(result["error"]);
-			if listenCommand:
-				iteration += 1;
-				if iteration >= waitingMaxIteration:
-					engine.say('Sorry, I did not get you');
-					engine.runAndWait();
-					listenCommand = False;
-					iteration = 0;
 		else:
-			textresult = result["transcription"];
-			if textresult in ("hello", "halo", "helo") and not listenCommand: 
-				engine.say('Yes, how can I help')
-				engine.runAndWait()
-				listenCommand = True
-				iteration = 0
-			elif listenCommand:
-				if textresult in ("off", "on"):
-					engine.say('consider it done');
-					engine.runAndWait();
-				else:
-					engine.say('command is not recognized');
-					engine.runAndWait();
-				listenCommand = False;
-				iteration = 0
+			engine = pyttsx3.init();							textresult = result["transcription"];
+			if textresult in ("hello", "halo","helo") and not listenCommand:
+				engine = pyttsx3.init();
+				engine.say('Yes, how can I help');
+				engine.runAndWait();
+				listenCommand = True;
+			else
+				
 		time.sleep(0.1);
 
 
