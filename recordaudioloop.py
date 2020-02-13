@@ -42,7 +42,7 @@ iteration = 0
 def recognize_speech_from_mic(recognizer, audio):
 	# create pyaudio stream
 	stream = audio.open(format = form_1,rate = samp_rate,channels = chans, input_device_index = dev_index,input = True, frames_per_buffer=chunk)
-	print("recording")
+	print(".") #recording
 	frames = []
 
 	# loop through stream and append audio chunks to frame array
@@ -50,7 +50,7 @@ def recognize_speech_from_mic(recognizer, audio):
 		data = stream.read(chunk)
 		frames.append(data)
 
-	print("finished recording")
+	print("..") #finish recording
 
 	# stop the stream, close it, and terminate the pyaudio instantiation
 	stream.stop_stream()
@@ -98,7 +98,8 @@ if __name__ == "__main__":
 			audioObj = pyaudio.PyAudio();
 		result = recognize_speech_from_mic(recognizer, audioObj);
 		if result["error"]:
-			print(result["error"]);
+			#print(result["error"]);
+			print('...');
 			if listenCommand:
 				iteration += 1;
 				if iteration >= waitingMaxIteration:
