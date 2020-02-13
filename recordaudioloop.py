@@ -114,6 +114,7 @@ if __name__ == "__main__":
 				iteration = 0
 			elif listenCommand:
 				if listen_command.count(textresult) > 0:
+					#this is the area where you will execute your command. For now it will just give you a comment that your command is acknowledged.
 					comment_voice(sound_acknowledged);
 				else:
 					comment_voice(sound_unrecognized);
