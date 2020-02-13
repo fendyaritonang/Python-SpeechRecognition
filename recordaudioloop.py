@@ -26,11 +26,18 @@ samp_rate = 44100 # 44.1kHz sampling rate
 chunk = 4096 # 2^12 samples for buffer
 record_secs = 2 # seconds to record
 dev_index = 2 # device index found by p.get_device_info_by_index(ii)
-wav_output_filename = 'test1.wav' # name of .wav file
+wav_output_filename = 'speech.wav' # name of .wav file
+sound_greeting = 'Yes, how can I help'
+sound_no_command = 'Sorry, I did not get you'
+sound_unrecognized = 'command is not recognized'
+sound_acknowledged = 'consider it done'
+listen_activation = ["hello", "halo", "helo"]
+listen_command = ["off", "on"]
+
+#local variables
 listenCommand = False
 waitingMaxIteration = 3
 iteration = 0
-
 
 def recognize_speech_from_mic(recognizer, audio):
 	# create pyaudio stream
@@ -79,36 +86,36 @@ def recognize_speech_from_mic(recognizer, audio):
 		response["error"] = "Unable to recognize speech";
 	return response;
 
+def comment_voice(voice_text):
+	engine = pyttsx3.init();
+	engine.say(voice_text);
+	engine.runAndWait();
+
 if __name__ == "__main__":
 	recognizer = sr.Recognizer();
 	while True:
 		with noalsaerr():
 			audioObj = pyaudio.PyAudio();
 		result = recognize_speech_from_mic(recognizer, audioObj);
-		engine = pyttsx3.init();
 		if result["error"]:
 			print(result["error"]);
 			if listenCommand:
 				iteration += 1;
 				if iteration >= waitingMaxIteration:
-					engine.say('Sorry, I did not get you');
-					engine.runAndWait();
+					comment_voice(sound_no_command);
 					listenCommand = False;
 					iteration = 0;
 		else:
 			textresult = result["transcription"];
-			if textresult in ("hello", "halo", "helo") and not listenCommand: 
-				engine.say('Yes, how can I help')
-				engine.runAndWait()
+			if listen_activation.count(textresult) > 0 and not listenCommand: 
+				comment_voice(sound_greeting);
 				listenCommand = True
 				iteration = 0
 			elif listenCommand:
-				if textresult in ("off", "on"):
-					engine.say('consider it done');
-					engine.runAndWait();
+				if listen_command.count(textresult) > 0:
+					comment_voice(sound_acknowledged);
 				else:
-					engine.say('command is not recognized');
-					engine.runAndWait();
+					comment_voice(sound_unrecognized);
 				listenCommand = False;
 				iteration = 0
 		time.sleep(0.1);
